@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Check-in HUB</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#07101f;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --tx:#eaf0ff;
+      --mut: rgba(234,240,255,.70);
+      --accent:#ff6a00;
+      --ok:#29d391;
+      --warn:#ffcc66;
+      --bad:#ff4d6d;
+
+      --r:16px;
+      --shadow: 0 18px 50px rgba(0,0,0,.38);
+
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", "Noto Sans", sans-serif;
+
+      --fz-base: 15px;
+      --fz-small: 13px;
+      --fz-title: 26px;
+      --fz-h2: 14px;
+
+      --pad: 16px;
+      --rowh: 54px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      font-size: var(--fz-base);
+      color:var(--tx);
+      background:
+        radial-gradient(1200px 700px at 12% 8%, rgba(255,106,0,.16), transparent 58%),
+        radial-gradient(1200px 700px at 88% 8%, rgba(41,211,145,.11), transparent 58%),
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)),
+        var(--bg);
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 20px 16px 36px;
+    }
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+    h1{margin:0;font-size:var(--fz-title); letter-spacing:.2px}
+    .sub{margin:8px 0 0;color:var(--mut);font-size:14px;line-height:1.45}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 520px 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width:1100px){
+      .grid{grid-template-columns:1fr}
+      h1{font-size:22px}
+    }
+
+    .card{
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border-radius:var(--r);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .hd{
+      padding: 14px var(--pad);
+      border-bottom:1px solid var(--stroke);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .hd h2{margin:0;font-size:var(--fz-h2);color:var(--mut);font-weight:800;letter-spacing:.25px}
+    .mini{color:var(--mut);font-size:var(--fz-small)}
+    .bd{padding: var(--pad)}
+
+    label{display:block;font-size:var(--fz-small);color:var(--mut);margin:0 0 7px}
+
+    input[type="file"], input[type="date"]{
+      width:100%;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.22);
+      color:var(--tx);
+      padding:12px 12px;
+      border-radius:14px;
+    }
+    input[type="file"]{border-style:dashed; cursor:pointer;}
+
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .col{flex:1 1 180px}
+
+    .btn{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.07);
+      color:var(--tx);
+      padding:12px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.15px;
+    }
+    .btn.primary{
+      background: linear-gradient(180deg, #ff9800, #ff6a00);
+      color:#140a00;
+      border-color: rgba(0,0,0,.18);
+    }
+    .btn.danger{
+      background: rgba(255,77,109,.12);
+      border-color: rgba(255,77,109,.40);
+      color:#ffdbe2;
+    }
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+
+    .note{
+      margin-top:12px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      padding:12px 12px;
+      border-radius:14px;
+      font-size:13px;
+      color:var(--mut);
+      line-height:1.45;
+    }
+    .msg{
+      margin-top:12px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      padding:12px 12px;
+      border-radius:14px;
+      font-size:13px;
+      color:var(--mut);
+      white-space:pre-wrap;
+      line-height:1.45;
+    }
+
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:12px
+    }
+    .kpi{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      padding:14px;
+      border-radius:14px
+    }
+    .kpi .n{font-size:28px;font-weight:1000}
+    .kpi .t{font-size:12px;color:var(--mut);margin-top:4px}
+    .kpi.ok .n{color:var(--ok)}
+    .kpi.warn .n{color:var(--warn)}
+
+    .toolbar{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+      align-items:center
+    }
+    .chip{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      padding:9px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color:var(--mut);
+    }
+    .chip strong{color:var(--tx)}
+    .chip input{transform: translateY(1px);}
+
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width:1100px){.split{grid-template-columns:1fr}}
+
+    .tableWrap{
+      max-height: 620px;
+      overflow:auto;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+    }
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    thead th{
+      position:sticky;top:0;z-index:1;
+      background: rgba(255,255,255,.07);
+      border-bottom:1px solid var(--stroke);
+      color:var(--mut);
+      font-size:12px;
+      text-align:left;
+      padding:12px 12px;
+      backdrop-filter: blur(10px);
+    }
+    tbody td{
+      padding: 14px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      font-size:14px;
+      vertical-align:middle;
+      min-height: var(--rowh);
+    }
+    tbody tr:last-child td{border-bottom:none}
+    .mono{font-family:var(--mono)}
+
+    .badge{
+      display:inline-flex;gap:10px;align-items:center;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.16);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color:var(--tx);
+      white-space:nowrap;
+    }
+    .sw{width:11px;height:11px;border-radius:4px;border:1px solid rgba(255,255,255,.25)}
+    .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+
+    /* Copiar */
+    .nameCell{display:flex;gap:12px;align-items:center}
+    .copyBtn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:9px 12px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.07);
+      color:var(--tx);
+      cursor:pointer;
+      font-weight:1000;
+      font-size:13px;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .copyBtn:hover{border-color:rgba(255,255,255,.26)}
+    .copiedRow{opacity:.30; filter:saturate(.55);}
+    .copiedRow .copyBtn{display:none;}
+    .copiedTag{
+      display:inline-flex;align-items:center;
+      padding:8px 12px;border-radius:999px;
+      border:1px solid rgba(41,211,145,.28);
+      background: rgba(41,211,145,.11);
+      color: rgba(210,255,238,.95);
+      font-size:12px;
+      font-weight:1000;
+      user-select:none;
+    }
+
+    textarea{
+      width:100%;
+      min-height: 210px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.20);
+      color:var(--tx);
+      padding:12px 12px;
+      border-radius:14px;
+      resize:vertical;
+      font-family: var(--sans);
+      font-size:14px;
+      line-height:1.45;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Check-in HUB</h1>
+      <p class="sub">
+        Clique em <b>Copiar</b> ➜ entra na lista do WhatsApp (um por linha) e fica marcado pra não repetir.
+        <br/>Padrão: <b>ignorar MOTO</b> (você pode ligar “Incluir MOTO”).
+      </p>
+    </div>
+    <div class="chip">Dedup: <strong>(day_br, driver_id)</strong></div>
+  </header>
+
+  <div class="grid">
+    <!-- LEFT -->
+    <section class="card">
+      <div class="hd">
+        <h2>Operação</h2>
+        <div class="mini" id="dayLabel">Dia: —</div>
+      </div>
+      <div class="bd">
+        <div class="row">
+          <div class="col">
+            <label>Dia (para salvar/carregar)</label>
+            <input id="dayPicker" type="date" />
+          </div>
+          <div class="col">
+            <label>&nbsp;</label>
+            <button class="btn" id="btnReload">Recarregar do Supabase</button>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <div class="col">
+            <label>1) Planejamento (.xlsx)</label>
+            <input id="filePlan" type="file" accept=".xlsx,.xls" />
+          </div>
+          <div class="col">
+            <label>2) Relatório Todos (.xlsx ou .csv)</label>
+            <input id="fileRel" type="file" accept=".xlsx,.xls,.csv,text/csv" />
+          </div>
+        </div>
+
+        <div class="note">
+          • Importou ➜ salva no Supabase automaticamente.<br>
+          • Copiou um nome ➜ marca no Supabase (não aparece mais pra copiar).<br>
+          • Filtro: por padrão <b>exclui MOTO</b>.
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button class="btn primary" id="btnProcess" disabled>Processar (tela)</button>
+          <button class="btn danger" id="btnClear" disabled>Limpar dia (Supabase)</button>
+        </div>
+
+        <div class="msg" id="msgBox">Status: pronto.</div>
+
+        <div class="kpis">
+          <div class="kpi ok"><div class="n" id="kArrived">0</div><div class="t">Chegaram</div></div>
+          <div class="kpi warn"><div class="n" id="kPending">0</div><div class="t">Pendentes</div></div>
+          <div class="kpi"><div class="n" id="kPlanned">0</div><div class="t">Planejados</div></div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <div class="hd">
+            <h2>Lista WhatsApp (ordem de cópia)</h2>
+            <div class="mini">um nome por linha</div>
+          </div>
+          <div class="bd">
+            <textarea id="waList" placeholder="Os nomes copiados vão aparecer aqui..."></textarea>
+            <div class="row" style="margin-top:12px;">
+              <button class="btn" id="btnCopyAll">Copiar lista</button>
+              <button class="btn danger" id="btnClearList">Limpar lista</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <section class="card">
+      <div class="hd">
+        <h2>Resultado</h2>
+        <div class="mini" id="metaLabel">—</div>
+      </div>
+      <div class="bd">
+        <div class="toolbar">
+          <div class="chip">Rotas (chegados): <strong id="routeCount">0</strong></div>
+          <div class="chip">Duplicados ignorados: <strong id="dupCount">0</strong></div>
+
+          <label class="chip" style="cursor:pointer;">
+            <input type="checkbox" id="toggleMoto" />
+            Incluir MOTO
+          </label>
+        </div>
+
+        <div class="split">
+          <div>
+            <div class="chip" style="margin-bottom:10px;">✅ Chegaram (no_hub)</div>
+            <div class="tableWrap">
+              <table id="tblArrived">
+                <thead>
+                  <tr>
+                    <th style="width:50px;">#</th>
+                    <th style="width:90px;">Hora</th>
+                    <th>Motorista</th>
+                    <th class="mono" style="width:120px;">Driver ID</th>
+                    <th style="width:160px;">Rota</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="legend" id="legend"></div>
+          </div>
+
+          <div>
+            <div class="chip" style="margin-bottom:10px;">🕒 Pendentes</div>
+            <div class="tableWrap">
+              <table id="tblPending">
+                <thead>
+                  <tr>
+                    <th>Motorista</th>
+                    <th class="mono" style="width:130px;">Driver ID</th>
+                    <th style="width:180px;">Rota</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="note" style="margin-top:12px;">
+              Pendente = está no planejamento e não apareceu em <span class="mono">hub_arrivals</span> como <span class="mono">no_hub</span>.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+/** SUPABASE FIXO */
+const SUPABASE_URL  = "https://amupzsijvladiynoeggy.supabase.co";
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtdXB6c2lqdmxhZGl5bm9lZ2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzY4NzUsImV4cCI6MjA4NzY1Mjg3NX0.2Om1Vx_GML8YW6FgLkub44bAdrPD1_Ux_qNjHElO-3E";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+/** Helpers */
+const $ = (id)=>document.getElementById(id);
+function setMsg(t){ $('msgBox').textContent = t; }
+function ymdToBr(ymd){ const [y,m,d] = String(ymd).split("-"); return `${d}/${m}/${y}`; }
+function parseBrDateTime(str){
+  const s = String(str ?? '').replaceAll('"','').trim();
+  if(!s) return null;
+  const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+  if(!m) return null;
+  const dd = +m[1], mm = +m[2], yyyy = +m[3], hh = +(m[4] ?? 0), mi = +(m[5] ?? 0);
+  const d = new Date(yyyy, mm-1, dd, hh, mi, 0, 0);
+  return isNaN(d.getTime()) ? null : d;
+}
+function formatTime(d){ if(!d) return "—"; return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+function routeColor(route){
+  const s = String(route ?? '').trim();
+  let h = 0; for(let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) >>> 0;
+  return `hsl(${h%360} 80% 55%)`;
+}
+function normalizeStatus(s){ return String(s??'').trim().toLowerCase(); }
+function todayYmd(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function getDayBr(){ const ymd = $('dayPicker').value; return ymd ? ymdToBr(ymd) : ymdToBr(todayYmd()); }
+function escapeHtml(s){
+  return String(s ?? '')
+    .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+    .replaceAll('"','&quot;').replaceAll("'","&#039;");
+}
+
+/** Filtro MOTO */
+function isMoto(v){
+  const s = String(v ?? '').trim().toLowerCase();
+  return s === 'moto' || s.includes('moto');
+}
+function motoKey(){ return `include_moto_${getDayBr()}`; }
+function getIncludeMoto(){ return localStorage.getItem(motoKey()) === '1'; }
+function setIncludeMoto(v){ localStorage.setItem(motoKey(), v ? '1':'0'); }
+
+/** CSV Parser (simples e robusto) */
+function csvParseLine(line){
+  const out=[]; let cur=""; let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch === '"'){
+      if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if(ch === ',' && !inQ){
+      out.push(cur); cur="";
+    } else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+function csvParse(text){
+  const clean = String(text ?? '').replace(/^\uFEFF/, ''); // remove BOM
+  const lines = clean.split(/\r?\n/).filter(l=>String(l).trim().length);
+  if(!lines.length) return [];
+  const header = csvParseLine(lines[0]).map(h=>h.trim());
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const cols = csvParseLine(lines[i]);
+    const obj={};
+    for(let c=0;c<header.length;c++) obj[header[c]] = (cols[c] ?? "").trim();
+    rows.push(obj);
+  }
+  return rows;
+}
+
+/** State */
+let planning = [];
+let arrived = [];
+let pending = [];
+let ignoredDuplicates = 0;
+
+/** WhatsApp list local */
+function waKey(){ return `wa_list_${getDayBr()}`; }
+function loadLocalWa(){ $('waList').value = localStorage.getItem(waKey()) || ''; }
+function saveLocalWa(){ localStorage.setItem(waKey(), $('waList').value); }
+function addToWaList(name){
+  const cur = $('waList').value.trim();
+  const next = cur ? (cur + "\n" + name) : name;
+  $('waList').value = next;
+  saveLocalWa();
+}
+
+/** XLSX Reader */
+function readXlsx(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onerror = ()=>reject(new Error("Falha ao ler arquivo."));
+    reader.onload = (e)=>{
+      const data = new Uint8Array(e.target.result);
+      resolve(XLSX.read(data, {type:'array'}));
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function importPlanning(file){
+  const wb = await readXlsx(file);
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const json = XLSX.utils.sheet_to_json(ws, {defval:''});
+  const day_br = getDayBr();
+
+  const rows = json.map(r=>({
+    day_br,
+    driver_id: String(r['ID'] ?? '').trim().replace(/\.0$/,''),
+    driver_name: String(r['Driver planejado'] ?? r['Nome'] ?? '').trim(),
+    planned_route: String(r['Letras'] ?? '').trim(),
+    vehicle_type: String(r['Tipo de Veículo'] ?? '').trim() || null,
+    spr: String(r['SPR'] ?? '').trim() || null
+  })).filter(x=>x.driver_id && x.driver_name);
+
+  planning = rows.map(x=>({
+    driver_id:x.driver_id,
+    driver_name:x.driver_name,
+    planned_route:x.planned_route,
+    vehicle_type:x.vehicle_type
+  }));
+
+  const { error } = await sb.from('planning_day').upsert(rows, { onConflict: 'day_br,driver_id' });
+  if(error) throw error;
+
+  setMsg(`Planejamento importado ✅ Linhas: ${rows.length}\nSalvo no Supabase (planning_day) • Dia ${day_br}`);
+}
+
+/** ✅ Relatório aceita XLSX (CSV na coluna A) OU CSV direto */
+async function importRelatorio(file){
+  const day_br = getDayBr();
+
+  const name = (file.name || "").toLowerCase();
+  const isCsv = name.endsWith(".csv") || file.type === "text/csv";
+
+  let relAll = [];
+
+  if(isCsv){
+    const text = await file.text();
+    relAll = csvParse(text);
+  }else{
+    const wb = await readXlsx(file);
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const col = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+    const lines = col.map(r => String(r[0] ?? '').trim()).filter(Boolean);
+    const text = lines.join('\n');
+    relAll = csvParse(text);
+  }
+
+  ignoredDuplicates = 0;
+  const seen = new Set();
+  const rows = [];
+
+  for(const r of relAll){
+    const st = normalizeStatus(r['Status']);
+    const driver_id = String(r['Driver ID'] ?? '').trim();
+    if(!driver_id) continue;
+
+    const key = `${day_br}|${driver_id}`;
+    if(seen.has(key)){ ignoredDuplicates++; continue; }
+    seen.add(key);
+
+    if(st === 'no_hub'){
+      const hubEntry = parseBrDateTime(r['Hora Entrada no Hub']);
+      rows.push({
+        day_br,
+        driver_id,
+        driver_name: String(r['Nome Completo'] ?? '').trim() || null,
+        route: String(r['Rota'] ?? '').trim() || null,
+        vehicle_type: String(r['Tipo Veículo'] ?? '').trim() || null,
+        hub_entry_at: hubEntry ? hubEntry.toISOString() : null,
+        hub_entry_raw: String(r['Hora Entrada no Hub'] ?? '').trim() || null,
+        authorization_date_br: String(r['Data Autorização'] ?? '').trim() || null,
+        import_date_br: String(r['Data Importação'] ?? '').trim() || null,
+        raw_json: r
+      });
+    }
+  }
+
+  if(rows.length){
+    const { error } = await sb.from('hub_arrivals')
+      .upsert(rows, { onConflict: 'day_br,driver_id', ignoreDuplicates: true });
+    if(error) throw error;
+  }
+
+  setMsg(
+    `Relatório importado ✅\n` +
+    `Arquivo: ${file.name}\n` +
+    `no_hub salvos: ${rows.length}\n` +
+    `Duplicados ignorados (arquivo): ${ignoredDuplicates}\n` +
+    `Dia: ${day_br}`
+  );
+
+  await loadFromSupabase();
+}
+
+/** Copiado */
+async function markCopied(driver_id){
+  const day_br = getDayBr();
+  const { error } = await sb
+    .from('hub_arrivals')
+    .update({ copied_at: new Date().toISOString() })
+    .eq('day_br', day_br)
+    .eq('driver_id', String(driver_id));
+  if(error) throw error;
+}
+
+/** Load */
+function applyMotoFilter(){
+  const includeMoto = getIncludeMoto();
+
+  const arrivedIdsAll = new Set(arrived.map(a=>a.driver_id));
+  pending = planning.filter(p=>!arrivedIdsAll.has(p.driver_id));
+
+  if(includeMoto) return;
+
+  planning = planning.filter(p=>!isMoto(p.vehicle_type));
+  arrived  = arrived.filter(a=>!isMoto(a.vehicle_type));
+  const arrivedIds = new Set(arrived.map(a=>a.driver_id));
+  pending = planning.filter(p=>!arrivedIds.has(p.driver_id));
+}
+
+async function loadFromSupabase(){
+  const day_br = getDayBr();
+  $('dayLabel').textContent = `Dia: ${day_br}`;
+
+  const { data: pData, error: pErr } = await sb
+    .from('planning_day')
+    .select('driver_id, driver_name, planned_route, vehicle_type')
+    .eq('day_br', day_br);
+  if(pErr) throw pErr;
+
+  planning = (pData ?? []).map(x=>({
+    driver_id: String(x.driver_id),
+    driver_name: x.driver_name ?? '',
+    planned_route: x.planned_route ?? '',
+    vehicle_type: x.vehicle_type ?? ''
+  }));
+
+  const { data: aData, error: aErr } = await sb
+    .from('hub_arrivals')
+    .select('driver_id, driver_name, route, hub_entry_at, hub_entry_raw, copied_at, vehicle_type')
+    .eq('day_br', day_br);
+  if(aErr) throw aErr;
+
+  arrived = (aData ?? []).map(x=>({
+    driver_id: String(x.driver_id),
+    driver_name: x.driver_name ?? '',
+    route: x.route ?? '',
+    hub_entry_dt: x.hub_entry_at ? new Date(x.hub_entry_at) : parseBrDateTime(x.hub_entry_raw),
+    copied_at: x.copied_at,
+    vehicle_type: x.vehicle_type ?? ''
+  }));
+
+  arrived.sort((a,b)=>{
+    const ta = a.hub_entry_dt ? a.hub_entry_dt.getTime() : Number.POSITIVE_INFINITY;
+    const tb = b.hub_entry_dt ? b.hub_entry_dt.getTime() : Number.POSITIVE_INFINITY;
+    return ta - tb;
+  });
+
+  applyMotoFilter();
+  render();
+
+  $('btnProcess').disabled = !(planning.length || arrived.length);
+  $('btnClear').disabled = false;
+
+  setMsg(`Carregado do Supabase ✅ Dia: ${day_br}\nPlanejamento: ${planning.length}\nChegaram: ${arrived.length}\nPendentes: ${pending.length}\nFiltro MOTO: ${getIncludeMoto() ? 'INCLUINDO' : 'IGNORANDO'}`);
+}
+
+/** Render */
+function render(){
+  $('kArrived').textContent = String(arrived.length);
+  $('kPending').textContent = String(pending.length);
+  $('kPlanned').textContent = String(planning.length);
+  $('dupCount').textContent = String(ignoredDuplicates);
+  $('metaLabel').textContent = `Planejamento: ${planning.length} • Chegaram: ${arrived.length}`;
+
+  const tbA = $('tblArrived').querySelector('tbody');
+  tbA.innerHTML = '';
+
+  const routeMap = new Map();
+  for(const a of arrived){
+    const r = a.route || '(sem rota)';
+    routeMap.set(r, (routeMap.get(r) ?? 0) + 1);
+  }
+  $('routeCount').textContent = String(routeMap.size);
+
+  arrived.forEach((a, idx)=>{
+    const r = a.route || '(sem rota)';
+    const col = routeColor(r);
+
+    const tr = document.createElement('tr');
+    tr.style.borderLeft = `6px solid ${col}`;
+    if(a.copied_at) tr.classList.add('copiedRow');
+
+    const nameHtml = `
+      <div class="nameCell">
+        <button class="copyBtn" data-id="${a.driver_id}" data-name="${escapeHtml(a.driver_name)}">Copiar</button>
+        ${a.copied_at ? `<span class="copiedTag">Copiado</span>` : ``}
+        <span>${escapeHtml(a.driver_name || '—')}</span>
+      </div>
+    `;
+
+    tr.innerHTML = `
+      <td class="mono">${idx+1}</td>
+      <td><span class="badge"><span class="sw" style="background:${col}"></span>${formatTime(a.hub_entry_dt)}</span></td>
+      <td>${nameHtml}</td>
+      <td class="mono">${escapeHtml(a.driver_id)}</td>
+      <td><span class="badge"><span class="sw" style="background:${col}"></span>${escapeHtml(r)}</span></td>
+    `;
+    tbA.appendChild(tr);
+  });
+
+  tbA.querySelectorAll('.copyBtn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.getAttribute('data-id');
+      const name = btn.getAttribute('data-name') || '';
+      try{
+        await navigator.clipboard.writeText(name);
+        addToWaList(name);
+        await markCopied(id);
+
+        const item = arrived.find(x=>x.driver_id === String(id));
+        if(item) item.copied_at = new Date().toISOString();
+        render();
+
+        setMsg(`Copiado ✅ ${name}\nMarcado no Supabase (não repete).`);
+      }catch(e){
+        console.error(e);
+        setMsg(`Erro ao copiar/marcar:\n${e.message ?? e}`);
+      }
+    });
+  });
+
+  const legend = $('legend');
+  legend.innerHTML = '';
+  const routesSorted = Array.from(routeMap.entries()).sort((a,b)=>b[1]-a[1]).slice(0,30);
+  for(const [r,n] of routesSorted){
+    const col = routeColor(r);
+    const el = document.createElement('div');
+    el.className = 'chip';
+    el.innerHTML = `<span class="sw" style="background:${col}"></span><strong>${escapeHtml(r)}</strong> <span style="opacity:.75">(${n})</span>`;
+    legend.appendChild(el);
+  }
+
+  const tbP = $('tblPending').querySelector('tbody');
+  tbP.innerHTML = '';
+  pending.forEach(p=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(p.driver_name)}</td>
+      <td class="mono">${escapeHtml(p.driver_id)}</td>
+      <td><span class="badge">${escapeHtml(p.planned_route || '—')}</span></td>
+    `;
+    tbP.appendChild(tr);
+  });
+
+  loadLocalWa();
+}
+
+/** Limpar dia */
+async function clearDay(){
+  const day_br = getDayBr();
+  if(!confirm(`Tem certeza que deseja limpar o dia ${day_br}?\nIsso apaga do Supabase e zera a lista.`)) return;
+
+  const a = await sb.from('hub_arrivals').delete().eq('day_br', day_br);
+  if(a.error) throw a.error;
+
+  const p = await sb.from('planning_day').delete().eq('day_br', day_br);
+  if(p.error) throw p.error;
+
+  planning = [];
+  arrived = [];
+  pending = [];
+  ignoredDuplicates = 0;
+
+  localStorage.removeItem(waKey());
+  $('waList').value = '';
+
+  render();
+  setMsg(`Dia ${day_br} limpo ✅ (hub_arrivals + planning_day + lista).`);
+}
+
+/** Events */
+$('dayPicker').value = todayYmd();
+$('dayLabel').textContent = `Dia: ${getDayBr()}`;
+
+$('toggleMoto').checked = getIncludeMoto();
+
+$('toggleMoto').addEventListener('change', async ()=>{
+  setIncludeMoto($('toggleMoto').checked);
+  try{
+    setMsg('Aplicando filtro MOTO…');
+    await loadFromSupabase();
+  }catch(e){
+    console.error(e);
+    setMsg(`Erro ao aplicar filtro:\n${e.message ?? e}`);
+  }
+});
+
+$('btnReload').addEventListener('click', async ()=>{
+  try{ setMsg('Carregando do Supabase…'); await loadFromSupabase(); }
+  catch(e){ console.error(e); setMsg(`Erro ao carregar:\n${e.message ?? e}`); }
+});
+
+$('btnClear').addEventListener('click', async ()=>{
+  try{ await clearDay(); }
+  catch(e){ console.error(e); setMsg(`Erro ao limpar:\n${e.message ?? e}`); }
+});
+
+$('btnProcess').addEventListener('click', ()=>{
+  applyMotoFilter();
+  render();
+  setMsg(`Tela atualizada ✅ (Filtro MOTO: ${getIncludeMoto() ? 'INCLUINDO' : 'IGNORANDO'})`);
+});
+
+$('btnCopyAll').addEventListener('click', async ()=>{
+  try{
+    const text = $('waList').value.trim();
+    if(!text) return setMsg('Lista vazia.');
+    await navigator.clipboard.writeText(text);
+    setMsg('Lista copiada ✅ Cole no WhatsApp.');
+  }catch(e){
+    console.error(e);
+    setMsg(`Erro ao copiar lista:\n${e.message ?? e}`);
+  }
+});
+
+$('btnClearList').addEventListener('click', ()=>{
+  if(!confirm('Limpar a lista do WhatsApp?')) return;
+  $('waList').value = '';
+  saveLocalWa();
+  setMsg('Lista do WhatsApp limpa ✅');
+});
+
+$('waList').addEventListener('input', saveLocalWa);
+
+$('filePlan').addEventListener('change', async (e)=>{
+  const f = e.target.files?.[0];
+  if(!f) return;
+  try{
+    setMsg('Importando Planejamento…');
+    await importPlanning(f);
+    await loadFromSupabase();
+    $('btnProcess').disabled = false;
+    $('btnClear').disabled = false;
+  }catch(err){
+    console.error(err);
+    setMsg(`Erro no Planejamento:\n${err.message ?? err}`);
+  }finally{
+    e.target.value = '';
+  }
+});
+
+$('fileRel').addEventListener('change', async (e)=>{
+  const f = e.target.files?.[0];
+  if(!f) return;
+  try{
+    setMsg('Importando Relatório…');
+    await importRelatorio(f);
+    $('btnProcess').disabled = false;
+    $('btnClear').disabled = false;
+  }catch(err){
+    console.error(err);
+    setMsg(`Erro no Relatório:\n${err.message ?? err}`);
+  }finally{
+    e.target.value = '';
+  }
+});
+
+/** Auto-load */
+(async ()=>{
+  try{
+    setMsg('Carregando do Supabase…');
+    await loadFromSupabase();
+    $('btnProcess').disabled = false;
+    $('btnClear').disabled = false;
+  }catch(err){
+    console.error(err);
+    setMsg('Não consegui carregar do Supabase.\nErro:\n' + (err.message ?? err));
+  }
+})();
+</script>
+</body>
+</html>
