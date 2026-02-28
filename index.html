@@ -26,13 +26,12 @@
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", "Noto Sans", sans-serif;
 
-      --fz-base: 15px;
-      --fz-small: 13px;
-      --fz-title: 26px;
-      --fz-h2: 14px;
+      --fz-base: 14px;
+      --fz-small: 12px;
+      --fz-title: 24px;
 
-      --pad: 16px;
-      --rowh: 54px;
+      --pad: 14px;
+      --rowh: 48px;
     }
 
     *{box-sizing:border-box}
@@ -42,8 +41,8 @@
       font-size: var(--fz-base);
       color:var(--tx);
       background:
-        radial-gradient(1200px 700px at 12% 8%, rgba(255,106,0,.16), transparent 58%),
-        radial-gradient(1200px 700px at 88% 8%, rgba(41,211,145,.11), transparent 58%),
+        radial-gradient(1200px 700px at 12% 8%, rgba(255,106,0,.14), transparent 58%),
+        radial-gradient(1200px 700px at 88% 8%, rgba(41,211,145,.10), transparent 58%),
         linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)),
         var(--bg);
       min-height:100vh;
@@ -52,29 +51,29 @@
     .wrap{
       max-width: 1500px;
       margin: 0 auto;
-      padding: 20px 16px 36px;
+      padding: 14px 14px 18px;
     }
 
     header{
       display:flex;
       justify-content:space-between;
-      gap:12px;
+      gap:10px;
       flex-wrap:wrap;
       align-items:flex-start;
-      margin-bottom:14px;
+      margin-bottom:12px;
     }
     h1{margin:0;font-size:var(--fz-title); letter-spacing:.2px}
-    .sub{margin:8px 0 0;color:var(--mut);font-size:14px;line-height:1.45}
+    .sub{margin:6px 0 0;color:var(--mut);font-size:13px;line-height:1.35}
 
     .grid{
       display:grid;
-      grid-template-columns: 520px 1fr;
-      gap:14px;
+      grid-template-columns: 460px 1fr;
+      gap:12px;
       align-items:start;
     }
     @media (max-width:1100px){
       .grid{grid-template-columns:1fr}
-      h1{font-size:22px}
+      h1{font-size:20px}
     }
 
     .card{
@@ -86,140 +85,138 @@
       backdrop-filter: blur(8px);
     }
     .hd{
-      padding: 14px var(--pad);
+      padding: 12px var(--pad);
       border-bottom:1px solid var(--stroke);
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap:10px;
     }
-    .hd h2{margin:0;font-size:var(--fz-h2);color:var(--mut);font-weight:800;letter-spacing:.25px}
+    .hd h2{margin:0;font-size:13px;color:var(--mut);font-weight:900;letter-spacing:.25px}
     .mini{color:var(--mut);font-size:var(--fz-small)}
     .bd{padding: var(--pad)}
 
-    label{display:block;font-size:var(--fz-small);color:var(--mut);margin:0 0 7px}
+    label{display:block;font-size:var(--fz-small);color:var(--mut);margin:0 0 6px}
 
     input[type="file"], input[type="date"]{
       width:100%;
       border:1px solid var(--stroke);
-      background: rgba(0,0,0,.22);
+      background: rgba(0,0,0,.20);
       color:var(--tx);
-      padding:12px 12px;
-      border-radius:14px;
+      padding:10px 12px;
+      border-radius:12px;
     }
     input[type="file"]{border-style:dashed; cursor:pointer;}
 
-    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
     .col{flex:1 1 180px}
 
     .btn{
       border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.07);
+      background: rgba(255,255,255,.06);
       color:var(--tx);
-      padding:12px 14px;
-      border-radius:14px;
+      padding:10px 12px;
+      border-radius:12px;
       cursor:pointer;
       font-weight:900;
-      letter-spacing:.15px;
+      letter-spacing:.1px;
+      transition: transform .05s ease, border-color .15s ease, opacity .15s ease;
     }
+    .btn:hover{border-color: rgba(255,255,255,.26)}
+    .btn:active{transform: translateY(1px)}
     .btn.primary{
       background: linear-gradient(180deg, #ff9800, #ff6a00);
       color:#140a00;
       border-color: rgba(0,0,0,.18);
     }
     .btn.danger{
-      background: rgba(255,77,109,.12);
-      border-color: rgba(255,77,109,.40);
+      background: rgba(255,77,109,.10);
+      border-color: rgba(255,77,109,.35);
       color:#ffdbe2;
     }
     .btn:disabled{opacity:.55;cursor:not-allowed}
 
-    .note{
-      margin-top:12px;
+    .note, .msg{
+      margin-top:10px;
       border:1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
-      padding:12px 12px;
-      border-radius:14px;
-      font-size:13px;
+      background: rgba(0,0,0,.16);
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:12.5px;
       color:var(--mut);
-      line-height:1.45;
-    }
-    .msg{
-      margin-top:12px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
-      padding:12px 12px;
-      border-radius:14px;
-      font-size:13px;
-      color:var(--mut);
+      line-height:1.35;
       white-space:pre-wrap;
-      line-height:1.45;
     }
 
     .kpis{
       display:grid;
       grid-template-columns:repeat(3,1fr);
-      gap:12px;
-      margin-top:12px
+      gap:10px;
+      margin-top:10px
     }
     .kpi{
       border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      padding:14px;
-      border-radius:14px
+      background: rgba(255,255,255,.05);
+      padding:10px 12px;
+      border-radius:12px
     }
-    .kpi .n{font-size:28px;font-weight:1000}
-    .kpi .t{font-size:12px;color:var(--mut);margin-top:4px}
+    .kpi .n{font-size:22px;font-weight:1000}
+    .kpi .t{font-size:12px;color:var(--mut);margin-top:3px}
     .kpi.ok .n{color:var(--ok)}
     .kpi.warn .n{color:var(--warn)}
 
     .toolbar{
       display:flex;
       justify-content:space-between;
-      gap:12px;
+      gap:10px;
       flex-wrap:wrap;
-      margin-bottom:12px;
+      margin-bottom:10px;
       align-items:center
     }
     .chip{
       display:inline-flex;
-      gap:10px;
+      gap:8px;
       align-items:center;
       border:1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
-      padding:9px 12px;
+      background: rgba(0,0,0,.14);
+      padding:8px 10px;
       border-radius:999px;
-      font-size:13px;
+      font-size:12.5px;
       color:var(--mut);
     }
     .chip strong{color:var(--tx)}
     .chip input{transform: translateY(1px);}
 
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     @media (max-width:1100px){.split{grid-template-columns:1fr}}
 
     .tableWrap{
-      max-height: 620px;
+      max-height: calc(100vh - 320px);
       overflow:auto;
-      border-radius:14px;
+      border-radius:12px;
       border:1px solid var(--stroke);
-      background: rgba(0,0,0,.16);
+      background: rgba(0,0,0,.14);
     }
+    @media (max-width:1100px){
+      .tableWrap{ max-height: 48vh; }
+    }
+
     table{width:100%;border-collapse:separate;border-spacing:0}
     thead th{
       position:sticky;top:0;z-index:1;
-      background: rgba(255,255,255,.07);
+      background: rgba(255,255,255,.06);
       border-bottom:1px solid var(--stroke);
       color:var(--mut);
       font-size:12px;
       text-align:left;
-      padding:12px 12px;
+      padding:10px 10px;
       backdrop-filter: blur(10px);
+      white-space:nowrap;
     }
     tbody td{
-      padding: 14px 12px;
+      padding: 10px 10px;
       border-bottom:1px solid rgba(255,255,255,.08);
-      font-size:14px;
+      font-size:13px;
       vertical-align:middle;
       min-height: var(--rowh);
     }
@@ -227,59 +224,151 @@
     .mono{font-family:var(--mono)}
 
     .badge{
-      display:inline-flex;gap:10px;align-items:center;
+      display:inline-flex;gap:8px;align-items:center;
       border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.16);
-      padding:8px 12px;
+      background: rgba(0,0,0,.12);
+      padding:7px 10px;
       border-radius:999px;
-      font-size:13px;
+      font-size:12.5px;
       color:var(--tx);
       white-space:nowrap;
+      position:relative;
     }
-    .sw{width:11px;height:11px;border-radius:4px;border:1px solid rgba(255,255,255,.25)}
-    .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    .sw{width:10px;height:10px;border-radius:4px;border:1px solid rgba(255,255,255,.25)}
+    .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 
     /* Copiar */
-    .nameCell{display:flex;gap:12px;align-items:center}
+    .nameCell{display:flex;gap:10px;align-items:center;min-width: 240px}
     .copyBtn{
-      display:inline-flex;align-items:center;gap:10px;
-      padding:9px 12px;border-radius:12px;
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:10px;
       border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.07);
+      background: rgba(255,255,255,.06);
       color:var(--tx);
       cursor:pointer;
       font-weight:1000;
-      font-size:13px;
+      font-size:12.5px;
       user-select:none;
       white-space:nowrap;
     }
-    .copyBtn:hover{border-color:rgba(255,255,255,.26)}
     .copiedRow{opacity:.30; filter:saturate(.55);}
     .copiedRow .copyBtn{display:none;}
     .copiedTag{
       display:inline-flex;align-items:center;
-      padding:8px 12px;border-radius:999px;
+      padding:7px 10px;border-radius:999px;
       border:1px solid rgba(41,211,145,.28);
       background: rgba(41,211,145,.11);
       color: rgba(210,255,238,.95);
       font-size:12px;
       font-weight:1000;
       user-select:none;
+      white-space:nowrap;
     }
 
     textarea{
       width:100%;
-      min-height: 210px;
+      min-height: 170px;
       border:1px solid var(--stroke);
-      background: rgba(0,0,0,.20);
+      background: rgba(0,0,0,.18);
       color:var(--tx);
-      padding:12px 12px;
-      border-radius:14px;
+      padding:10px 12px;
+      border-radius:12px;
       resize:vertical;
       font-family: var(--sans);
-      font-size:14px;
-      line-height:1.45;
+      font-size:13px;
+      line-height:1.4;
     }
+
+    /* Tooltip */
+    .tip{
+      position:absolute;
+      left:0;
+      top: calc(100% + 8px);
+      min-width: 280px;
+      max-width: 420px;
+      background: rgba(10,16,28,.96);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 18px 45px rgba(0,0,0,.45);
+      border-radius:12px;
+      padding:10px 10px;
+      display:none;
+      z-index:50;
+    }
+    .badge:hover .tip{display:block;}
+    .tip .t{font-size:12px;color:var(--mut);margin-bottom:6px;font-weight:900}
+    .tip .list{font-size:12.5px;line-height:1.35;color:var(--tx);white-space:pre-wrap}
+    .tip .mut{color:var(--mut)}
+    .tip .line{height:1px;background:rgba(255,255,255,.08);margin:8px 0}
+
+    /* Rotas agrupadas */
+    .routeGroups{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:10px;
+      margin-bottom:12px;
+    }
+    @media (max-width:1100px){
+      .routeGroups{grid-template-columns:1fr}
+    }
+    .rgItem{
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.14);
+      border-radius:12px;
+      padding:10px 12px;
+    }
+    .rgTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    .rgRoute{
+      display:flex;align-items:center;gap:8px;
+      font-weight:1000;
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 75%;
+    }
+    .rgMeta{color:var(--mut);font-size:12px;white-space:nowrap}
+    .rgList{
+      font-size:12.5px;
+      line-height:1.35;
+      color:var(--tx);
+      white-space:pre-wrap;
+      margin-top:6px;
+    }
+    .rgList .mut{color:var(--mut)}
+
+    /* ✅ Tabs */
+    .tabs{
+      display:flex;
+      gap:10px;
+      margin: 4px 0 12px;
+      flex-wrap:wrap;
+    }
+    .tabBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: var(--tx);
+      padding:10px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight: 1000;
+      font-size: 12.5px;
+      transition: border-color .15s ease, transform .05s ease, opacity .15s ease;
+    }
+    .tabBtn:hover{ border-color: rgba(255,255,255,.26); }
+    .tabBtn:active{ transform: translateY(1px); }
+    .tabBtn.active{
+      background: linear-gradient(180deg, rgba(255,152,0,.95), rgba(255,106,0,.92));
+      color:#140a00;
+      border-color: rgba(0,0,0,.18);
+    }
+    .tabPanel{ animation: fadeIn .12s ease; }
+    @keyframes fadeIn{ from{opacity:.65; transform: translateY(2px);} to{opacity:1; transform:none;} }
   </style>
 </head>
 
@@ -315,7 +404,7 @@
           </div>
         </div>
 
-        <div class="row" style="margin-top:12px;">
+        <div class="row" style="margin-top:10px;">
           <div class="col">
             <label>1) Planejamento (.xlsx)</label>
             <input id="filePlan" type="file" accept=".xlsx,.xls" />
@@ -332,7 +421,7 @@
           • Filtro: por padrão <b>exclui MOTO</b>.
         </div>
 
-        <div class="row" style="margin-top:12px;">
+        <div class="row" style="margin-top:10px;">
           <button class="btn primary" id="btnProcess" disabled>Processar (tela)</button>
           <button class="btn danger" id="btnClear" disabled>Limpar dia (Supabase)</button>
         </div>
@@ -345,14 +434,14 @@
           <div class="kpi"><div class="n" id="kPlanned">0</div><div class="t">Planejados</div></div>
         </div>
 
-        <div class="card" style="margin-top:14px;">
+        <div class="card" style="margin-top:12px;">
           <div class="hd">
             <h2>Lista WhatsApp (ordem de cópia)</h2>
             <div class="mini">um nome por linha</div>
           </div>
           <div class="bd">
             <textarea id="waList" placeholder="Os nomes copiados vão aparecer aqui..."></textarea>
-            <div class="row" style="margin-top:12px;">
+            <div class="row" style="margin-top:10px;">
               <button class="btn" id="btnCopyAll">Copiar lista</button>
               <button class="btn danger" id="btnClearList">Limpar lista</button>
             </div>
@@ -368,6 +457,7 @@
         <h2>Resultado</h2>
         <div class="mini" id="metaLabel">—</div>
       </div>
+
       <div class="bd">
         <div class="toolbar">
           <div class="chip">Rotas (chegados): <strong id="routeCount">0</strong></div>
@@ -379,42 +469,64 @@
           </label>
         </div>
 
-        <div class="split">
-          <div>
-            <div class="chip" style="margin-bottom:10px;">✅ Chegaram (no_hub)</div>
-            <div class="tableWrap">
-              <table id="tblArrived">
-                <thead>
-                  <tr>
-                    <th style="width:50px;">#</th>
-                    <th style="width:90px;">Hora</th>
-                    <th>Motorista</th>
-                    <th class="mono" style="width:120px;">Driver ID</th>
-                    <th style="width:160px;">Rota</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-            <div class="legend" id="legend"></div>
-          </div>
+        <!-- ✅ ABAS -->
+        <div class="tabs">
+          <button class="tabBtn active" id="tabGrouped" data-tab="grouped">📌 Rotas Agrupadas</button>
+          <button class="tabBtn" id="tabArrived" data-tab="arrived">✅ Lista (Chegaram)</button>
+        </div>
 
-          <div>
-            <div class="chip" style="margin-bottom:10px;">🕒 Pendentes</div>
-            <div class="tableWrap">
-              <table id="tblPending">
-                <thead>
-                  <tr>
-                    <th>Motorista</th>
-                    <th class="mono" style="width:130px;">Driver ID</th>
-                    <th style="width:180px;">Rota</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+        <!-- ✅ Panel: Rotas Agrupadas -->
+        <div class="tabPanel" id="panelGrouped">
+          <div class="card" style="margin-bottom:12px;">
+            <div class="hd">
+              <h2>Rotas agrupadas (ordem de chegada)</h2>
+              <div class="mini">mesma rota = lista em ordem</div>
             </div>
-            <div class="note" style="margin-top:12px;">
-              Pendente = está no planejamento e não apareceu em <span class="mono">hub_arrivals</span> como <span class="mono">no_hub</span>.
+            <div class="bd">
+              <div class="routeGroups" id="routeGroups"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ Panel: Lista -->
+        <div class="tabPanel" id="panelArrived" style="display:none;">
+          <div class="split">
+            <div>
+              <div class="chip" style="margin-bottom:8px;">✅ Chegaram (no_hub)</div>
+              <div class="tableWrap">
+                <table id="tblArrived">
+                  <thead>
+                    <tr>
+                      <th style="width:42px;">#</th>
+                      <th style="width:90px;">Hora</th>
+                      <th>Motorista</th>
+                      <th class="mono" style="width:120px;">Driver ID</th>
+                      <th style="width:170px;">Rota</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="legend" id="legend"></div>
+            </div>
+
+            <div>
+              <div class="chip" style="margin-bottom:8px;">🕒 Pendentes</div>
+              <div class="tableWrap">
+                <table id="tblPending">
+                  <thead>
+                    <tr>
+                      <th>Motorista</th>
+                      <th class="mono" style="width:130px;">Driver ID</th>
+                      <th style="width:180px;">Rota</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="note" style="margin-top:10px;">
+                Pendente = está no planejamento e não apareceu em <span class="mono">hub_arrivals</span> como <span class="mono">no_hub</span>.
+              </div>
             </div>
           </div>
         </div>
@@ -434,16 +546,25 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 const $ = (id)=>document.getElementById(id);
 function setMsg(t){ $('msgBox').textContent = t; }
 function ymdToBr(ymd){ const [y,m,d] = String(ymd).split("-"); return `${d}/${m}/${y}`; }
+
+/** dd/mm/yyyy HH:MM[:SS] */
 function parseBrDateTime(str){
   const s = String(str ?? '').replaceAll('"','').trim();
   if(!s) return null;
-  const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+  const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?/);
   if(!m) return null;
-  const dd = +m[1], mm = +m[2], yyyy = +m[3], hh = +(m[4] ?? 0), mi = +(m[5] ?? 0);
-  const d = new Date(yyyy, mm-1, dd, hh, mi, 0, 0);
+  const dd = +m[1], mm = +m[2], yyyy = +m[3];
+  const hh = +(m[4] ?? 0), mi = +(m[5] ?? 0), ss = +(m[6] ?? 0);
+  const d = new Date(yyyy, mm-1, dd, hh, mi, ss, 0);
   return isNaN(d.getTime()) ? null : d;
 }
-function formatTime(d){ if(!d) return "—"; return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+function formatTimeFull(d){
+  if(!d) return "—";
+  const hh = String(d.getHours()).padStart(2,"0");
+  const mm = String(d.getMinutes()).padStart(2,"0");
+  const ss = String(d.getSeconds()).padStart(2,"0");
+  return `${hh}:${mm}:${ss}`;
+}
 function routeColor(route){
   const s = String(route ?? '').trim();
   let h = 0; for(let i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) >>> 0;
@@ -470,7 +591,7 @@ function motoKey(){ return `include_moto_${getDayBr()}`; }
 function getIncludeMoto(){ return localStorage.getItem(motoKey()) === '1'; }
 function setIncludeMoto(v){ localStorage.setItem(motoKey(), v ? '1':'0'); }
 
-/** CSV Parser (simples e robusto) */
+/** CSV Parser */
 function csvParseLine(line){
   const out=[]; let cur=""; let inQ=false;
   for(let i=0;i<line.length;i++){
@@ -486,7 +607,7 @@ function csvParseLine(line){
   return out;
 }
 function csvParse(text){
-  const clean = String(text ?? '').replace(/^\uFEFF/, ''); // remove BOM
+  const clean = String(text ?? '').replace(/^\uFEFF/, '');
   const lines = clean.split(/\r?\n/).filter(l=>String(l).trim().length);
   if(!lines.length) return [];
   const header = csvParseLine(lines[0]).map(h=>h.trim());
@@ -515,6 +636,21 @@ function addToWaList(name){
   const next = cur ? (cur + "\n" + name) : name;
   $('waList').value = next;
   saveLocalWa();
+}
+
+/** ✅ Tabs (salva por dia) */
+function tabKey(){ return `tab_view_${getDayBr()}`; }
+function setTab(view){
+  const isGrouped = view === 'grouped';
+  $('panelGrouped').style.display = isGrouped ? '' : 'none';
+  $('panelArrived').style.display = isGrouped ? 'none' : '';
+  $('tabGrouped').classList.toggle('active', isGrouped);
+  $('tabArrived').classList.toggle('active', !isGrouped);
+  localStorage.setItem(tabKey(), view);
+}
+function loadTab(){
+  const v = localStorage.getItem(tabKey()) || 'grouped';
+  setTab(v);
 }
 
 /** XLSX Reader */
@@ -558,7 +694,6 @@ async function importPlanning(file){
   setMsg(`Planejamento importado ✅ Linhas: ${rows.length}\nSalvo no Supabase (planning_day) • Dia ${day_br}`);
 }
 
-/** ✅ Relatório aceita XLSX (CSV na coluna A) OU CSV direto */
 async function importRelatorio(file){
   const day_br = getDayBr();
 
@@ -626,7 +761,7 @@ async function importRelatorio(file){
   await loadFromSupabase();
 }
 
-/** Copiado */
+/** Copiado (marca no Supabase) */
 async function markCopied(driver_id){
   const day_br = getDayBr();
   const { error } = await sb
@@ -684,10 +819,12 @@ async function loadFromSupabase(){
     vehicle_type: x.vehicle_type ?? ''
   }));
 
+  /** ✅ Ordem JUSTA: timestamp e desempate por driver_id */
   arrived.sort((a,b)=>{
     const ta = a.hub_entry_dt ? a.hub_entry_dt.getTime() : Number.POSITIVE_INFINITY;
     const tb = b.hub_entry_dt ? b.hub_entry_dt.getTime() : Number.POSITIVE_INFINITY;
-    return ta - tb;
+    if(ta !== tb) return ta - tb;
+    return String(a.driver_id).localeCompare(String(b.driver_id));
   });
 
   applyMotoFilter();
@@ -699,6 +836,17 @@ async function loadFromSupabase(){
   setMsg(`Carregado do Supabase ✅ Dia: ${day_br}\nPlanejamento: ${planning.length}\nChegaram: ${arrived.length}\nPendentes: ${pending.length}\nFiltro MOTO: ${getIncludeMoto() ? 'INCLUINDO' : 'IGNORANDO'}`);
 }
 
+/** agrupa chegados por rota (mantendo ordem de chegada) */
+function buildArrivedByRoute(){
+  const map = new Map();
+  for(const a of arrived){
+    const r = (a.route || '(sem rota)').trim();
+    if(!map.has(r)) map.set(r, []);
+    map.get(r).push(a);
+  }
+  return map;
+}
+
 /** Render */
 function render(){
   $('kArrived').textContent = String(arrived.length);
@@ -707,19 +855,47 @@ function render(){
   $('dupCount').textContent = String(ignoredDuplicates);
   $('metaLabel').textContent = `Planejamento: ${planning.length} • Chegaram: ${arrived.length}`;
 
+  const arrivedByRoute = buildArrivedByRoute();
+  $('routeCount').textContent = String(arrivedByRoute.size);
+
+  /** Rotas agrupadas */
+  const rg = $('routeGroups');
+  rg.innerHTML = '';
+  const groupsSorted = Array.from(arrivedByRoute.entries()).sort((a,b)=>b[1].length - a[1].length);
+  for(const [route, list] of groupsSorted){
+    const col = routeColor(route);
+    const names = list.map(x=>`${x.driver_name || '—'}  •  ${formatTimeFull(x.hub_entry_dt)}`).join('\n');
+    const item = document.createElement('div');
+    item.className = 'rgItem';
+    item.innerHTML = `
+      <div class="rgTop">
+        <div class="rgRoute" title="${escapeHtml(route)}">
+          <span class="sw" style="background:${col}"></span>
+          <span>${escapeHtml(route)}</span>
+        </div>
+        <div class="rgMeta">${list.length} no hub</div>
+      </div>
+      <div class="rgList">
+        ${names ? escapeHtml(names) : `<span class="mut">ninguém no hub</span>`}
+      </div>
+    `;
+    rg.appendChild(item);
+  }
+  if(!groupsSorted.length){
+    rg.innerHTML = `<div class="note">Nenhuma rota com motorista no hub ainda.</div>`;
+  }
+
+  /** tabela Chegaram */
   const tbA = $('tblArrived').querySelector('tbody');
   tbA.innerHTML = '';
 
-  const routeMap = new Map();
-  for(const a of arrived){
-    const r = a.route || '(sem rota)';
-    routeMap.set(r, (routeMap.get(r) ?? 0) + 1);
-  }
-  $('routeCount').textContent = String(routeMap.size);
-
   arrived.forEach((a, idx)=>{
-    const r = a.route || '(sem rota)';
+    const r = (a.route || '(sem rota)').trim();
     const col = routeColor(r);
+    const list = arrivedByRoute.get(r) || [];
+    const tooltipList = list
+      .map((x,i)=>`${String(i+1).padStart(2,'0')}. ${x.driver_name || '—'}  •  ${formatTimeFull(x.hub_entry_dt)}`)
+      .join('\n');
 
     const tr = document.createElement('tr');
     tr.style.borderLeft = `6px solid ${col}`;
@@ -735,14 +911,29 @@ function render(){
 
     tr.innerHTML = `
       <td class="mono">${idx+1}</td>
-      <td><span class="badge"><span class="sw" style="background:${col}"></span>${formatTime(a.hub_entry_dt)}</span></td>
+      <td>
+        <span class="badge">
+          <span class="sw" style="background:${col}"></span>
+          ${formatTimeFull(a.hub_entry_dt)}
+        </span>
+      </td>
       <td>${nameHtml}</td>
       <td class="mono">${escapeHtml(a.driver_id)}</td>
-      <td><span class="badge"><span class="sw" style="background:${col}"></span>${escapeHtml(r)}</span></td>
+      <td>
+        <span class="badge">
+          <span class="sw" style="background:${col}"></span>
+          ${escapeHtml(r)}
+          <span class="tip">
+            <div class="t">No hub nesta rota (${list.length})</div>
+            <div class="list">${tooltipList ? escapeHtml(tooltipList) : `<span class="mut">—</span>`}</div>
+          </span>
+        </span>
+      </td>
     `;
     tbA.appendChild(tr);
   });
 
+  /** copiar individual */
   tbA.querySelectorAll('.copyBtn').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
       const id = btn.getAttribute('data-id');
@@ -764,17 +955,19 @@ function render(){
     });
   });
 
+  /** legenda */
   const legend = $('legend');
   legend.innerHTML = '';
-  const routesSorted = Array.from(routeMap.entries()).sort((a,b)=>b[1]-a[1]).slice(0,30);
-  for(const [r,n] of routesSorted){
+  const routesSorted = Array.from(arrivedByRoute.entries()).sort((a,b)=>b[1].length - a[1].length).slice(0,24);
+  for(const [r,list] of routesSorted){
     const col = routeColor(r);
     const el = document.createElement('div');
     el.className = 'chip';
-    el.innerHTML = `<span class="sw" style="background:${col}"></span><strong>${escapeHtml(r)}</strong> <span style="opacity:.75">(${n})</span>`;
+    el.innerHTML = `<span class="sw" style="background:${col}"></span><strong>${escapeHtml(r)}</strong> <span style="opacity:.75">(${list.length})</span>`;
     legend.appendChild(el);
   }
 
+  /** pendentes */
   const tbP = $('tblPending').querySelector('tbody');
   tbP.innerHTML = '';
   pending.forEach(p=>{
@@ -818,6 +1011,10 @@ $('dayPicker').value = todayYmd();
 $('dayLabel').textContent = `Dia: ${getDayBr()}`;
 
 $('toggleMoto').checked = getIncludeMoto();
+
+/** tabs */
+$('tabGrouped').addEventListener('click', ()=> setTab('grouped'));
+$('tabArrived').addEventListener('click', ()=> setTab('arrived'));
 
 $('toggleMoto').addEventListener('change', async ()=>{
   setIncludeMoto($('toggleMoto').checked);
@@ -867,6 +1064,17 @@ $('btnClearList').addEventListener('click', ()=>{
 
 $('waList').addEventListener('input', saveLocalWa);
 
+$('dayPicker').addEventListener('change', async ()=>{
+  loadTab();
+  try{
+    setMsg('Carregando do Supabase…');
+    await loadFromSupabase();
+  }catch(e){
+    console.error(e);
+    setMsg(`Erro ao carregar:\n${e.message ?? e}`);
+  }
+});
+
 $('filePlan').addEventListener('change', async (e)=>{
   const f = e.target.files?.[0];
   if(!f) return;
@@ -905,6 +1113,7 @@ $('fileRel').addEventListener('change', async (e)=>{
   try{
     setMsg('Carregando do Supabase…');
     await loadFromSupabase();
+    loadTab();
     $('btnProcess').disabled = false;
     $('btnClear').disabled = false;
   }catch(err){
